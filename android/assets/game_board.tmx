@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" nextobjectid="5">
+ <tileset firstgid="1" name="tileset_gutter" tilewidth="16" tileheight="16" spacing="2" margin="1" tilecount="924">
+  <image source="tileset_gutter.png" width="594" height="504"/>
+ </tileset>
+ <layer name="Graphics" width="40" height="40">
+  <data encoding="base64" compression="zlib">
+   eJzt2U0KgCAQxfFBT9DHSSrvN0fvCbkoKFrlQH/wMSIuHr+lejZzZUhmY4ozPZ+z6GxN38y2f7rXek3az4pWqNROtdumlID9ytENP/zwww+/WMEPP/zwww8//PDDD79IwQ8//PD7u1+P9/E38/p+3/s/4e5/YQcLITvx
+  </data>
+ </layer>
+ <objectgroup name="Boundary">
+  <object id="1" x="0" y="0" width="640" height="32"/>
+  <object id="2" x="0" y="32" width="32" height="608"/>
+  <object id="3" x="32" y="608" width="608" height="32"/>
+  <object id="4" x="608" y="32" width="32" height="576"/>
+ </objectgroup>
+</map>
