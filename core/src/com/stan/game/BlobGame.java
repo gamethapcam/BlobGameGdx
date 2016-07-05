@@ -9,13 +9,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.stan.game.Screens.PlayScreen;
 
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
+
 public class BlobGame extends Game {
 	public static final int V_WIDTH = 640;
 	public static final int V_HEIGHT = 640;
-	public static final int GOOD_BLOB_SPEED = 100;
+	public static final int GOOD_BLOB_SPEED = 1000;
 	public static final int GOOD_BLOB_RESTITUTION = 1;
 	public SpriteBatch batch;
-
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

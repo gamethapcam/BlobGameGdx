@@ -5,28 +5,25 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.stan.game.Accessors.GoodBlobAccessor;
 import com.stan.game.BlobGame;
 import com.stan.game.Scenes.Hud;
 import com.stan.game.Sprites.GoodBlob;
+import com.stan.game.Tools.B2WorldCreator;
 
-import java.sql.Blob;
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenManager;
+import aurelienribon.tweenengine.equations.Back;
+import aurelienribon.tweenengine.equations.Elastic;
+import aurelienribon.tweenengine.equations.Quad;
 
 /**
  * Created by stan on 3/07/16.
@@ -42,6 +39,7 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
     private GoodBlob player;
+    private TweenManager tweenManager;
 
 
     public PlayScreen(BlobGame game){
@@ -55,39 +53,39 @@ public class PlayScreen implements Screen {
         gamecam.position.set(BlobGame.V_WIDTH / 2, BlobGame.V_HEIGHT / 2, 0);
         world = new World(new Vector2(0, 0), true);
         b2dr = new Box2DDebugRenderer();
-        player = new GoodBlob(world);
-        BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        Body body;
-
-        for (MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
-            body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
-            fdef.shape = shape;
-            fdef.restitution = BlobGame.GOOD_BLOB_RESTITUTION;
-            body.createFixture(fdef);
-        }
+        new B2WorldCreator(world, map);
+        player = new GoodBlob(world, this);
+        tweenManager = new TweenManager();
     }
 
     public void update(float dt){
         handleInput(dt);
+        tweenManager.update(dt);
+        Tween.registerAccessor(GoodBlob.class, new GoodBlobAccessor());
+
         world.step(1/60f, 6, 2);
+        player.update(dt);
         renderer.setView(gamecam);
     }
 
     private void handleInput(float dt){
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)){
             player.b2body.applyLinearImpulse(new Vector2(0, BlobGame.GOOD_BLOB_SPEED), player.b2body.getWorldCenter(), true);
+            Tween.set(player, GoodBlobAccessor.ALPHA).target(player.getAngle()).start(tweenManager);
+            Tween.to(player, GoodBlobAccessor.ALPHA, .4f).target(180).start(tweenManager).ease(Back.IN);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)){
             player.b2body.applyLinearImpulse(new Vector2(0, -BlobGame.GOOD_BLOB_SPEED), player.b2body.getWorldCenter(), true);
+            Tween.set(player, GoodBlobAccessor.ALPHA).target(player.getAngle()).start(tweenManager);
+            Tween.to(player, GoodBlobAccessor.ALPHA, .4f).target(0).start(tweenManager).ease(Back.IN);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
-            player.b2body.applyLinearImpulse(new Vector2(-BlobGame.GOOD_BLOB_SPEED, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.applyLinearImpulse(new Vector2(-BlobGame.GOOD_BLOB_SPEED, 0), player.b2body.getWorldCenter(),
+                    true);
+            Tween.set(player, GoodBlobAccessor.ALPHA).target(player.getAngle()).start(tweenManager);
+            Tween.to(player, GoodBlobAccessor.ALPHA, .4f).target(270).start(tweenManager).ease(Back.IN);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
             player.b2body.applyLinearImpulse(new Vector2(BlobGame.GOOD_BLOB_SPEED, 0), player.b2body.getWorldCenter(), true);
+            Tween.set(player, GoodBlobAccessor.ALPHA).target(player.getAngle()).start(tweenManager);
+            Tween.to(player, GoodBlobAccessor.ALPHA, .4f).target(90).start(tweenManager).ease(Back.IN);
         }
     }
 
@@ -105,6 +103,7 @@ public class PlayScreen implements Screen {
         b2dr.render(world, gamecam.combined);
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
+        player.draw(game.batch);
         game.batch.end();
         hud.stage.draw();
 
@@ -132,6 +131,10 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
     }
 }
