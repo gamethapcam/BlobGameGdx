@@ -10,11 +10,15 @@ import aurelienribon.tweenengine.TweenAccessor;
  */
 public class GoodBlobAccessor implements TweenAccessor<GoodBlob> {
     public static final int ALPHA = 0;
+    public static final int BETA = 1;
     @Override
     public int getValues(GoodBlob target, int tweenType, float[] returnValues) {
         switch(tweenType){
             case ALPHA:
                 returnValues[0] = target.getAngle();
+                return 1;
+            case BETA:
+                returnValues[0] = target.getBlobScale();
                 return 1;
             default:
                 assert false;
@@ -27,6 +31,9 @@ public class GoodBlobAccessor implements TweenAccessor<GoodBlob> {
         switch(tweenType){
             case ALPHA:
                 target.setAngle(newValues[0]);
+                break;
+            case BETA:
+                target.setBlobScale(newValues[0]);
                 break;
             default:
                 assert false;
