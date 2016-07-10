@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.stan.game.BlobGame;
 import com.stan.game.InputOutput.TitleScreenInputListener;
+import com.stan.game.Settings.BlobGamePreferences;
 
 /**
  * Created by stan on 9/07/16.
@@ -32,6 +33,8 @@ public class TitleScreen implements Screen {
     public TitleScreen(Game game, SpriteBatch sb){
 
         Gdx.input.setInputProcessor(new TitleScreenInputListener(this));
+        BlobGamePreferences prefs = new BlobGamePreferences();
+
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Montserrat-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 50;
@@ -50,8 +53,10 @@ public class TitleScreen implements Screen {
         table.setHeight(BlobGame.V_HEIGHT);
         //table.setFillParent(true);
         Label playLabel = new Label("TOUCH TO PLAY", font);
+        Label highScoreLabel = new Label("HIGH SCORE: " + Integer.toString(prefs.getHighScore()), font);
         table.add(playLabel);
-
+        table.row();
+        table.add(highScoreLabel).expandX().padTop(10f);
         stage.addActor(table);
 
         music = BlobGame.manager.get("title_screen.mp3", Music.class);

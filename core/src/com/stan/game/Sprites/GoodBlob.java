@@ -123,28 +123,31 @@ public class GoodBlob extends Sprite {
     }
 
     public void onCollision(){
-
-        if (this.scale == 1){
-            if (this.lives > 0) {
-                BlobGame.manager.get("Hit_Hurt.wav", Sound.class).play();
-                this.lives--;
+        if(!goodBlobIsDead) {
+            if (this.scale == 1) {
+                if (this.lives > 0) {
+                    BlobGame.manager.get("Hit_Hurt.wav", Sound.class).play();
+                    this.lives--;
+                }
+            } else {
+                if (this.power < 1) {
+                    this.power += .1f;
+                }
+                this.score += 10;
+                BlobGame.manager.get("get_point.mp3", Sound.class).play();
             }
-        } else {
-            if (this.power < 1){
-                this.power += .1f;
-            }
-            this.score += 10;
-            BlobGame.manager.get("get_point.mp3", Sound.class).play();
-        }
 
-        if (this.lives == 0){
-            BlobGame.manager.get("death_sound.mp3", Sound.class).play();
-            goodBlobIsDead = true;
+            if (this.lives == 0) {
+                BlobGame.manager.get("death_sound.mp3", Sound.class).play();
+                goodBlobIsDead = true;
+            }
         }
     }
 
     public void hitWall(){
-        BlobGame.manager.get("hit_wall.mp3", Sound.class).play();
+        if (!goodBlobIsDead) {
+            BlobGame.manager.get("hit_wall.mp3", Sound.class).play();
+        }
     }
 
     public Texture getFrame(float dt){

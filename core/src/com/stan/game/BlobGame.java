@@ -48,6 +48,7 @@ public class BlobGame extends Game {
 		manager.load("get_point.mp3", Sound.class);
 		manager.load("hit_wall.mp3", Sound.class);
 		manager.load("low_power.wav", Sound.class);
+		manager.load("pickup.wav", Sound.class);
 		manager.finishLoading();
 		setScreen(new TitleScreen(this, batch));
 	}

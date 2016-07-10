@@ -1,6 +1,7 @@
 package com.stan.game.Pickups;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -64,6 +65,7 @@ public abstract class Pickup extends Sprite {
     }
 
     public void onPickedUp(){
+        BlobGame.manager.get("pickup.wav", Sound.class).play();
         this.setToDestroy = true;
     }
 
