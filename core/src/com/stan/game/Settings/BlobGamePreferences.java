@@ -14,6 +14,7 @@ public class BlobGamePreferences {
     public BlobGamePreferences(){}
 
     protected Preferences getPrefs() {
+
         if(preferences == null){
             preferences = Gdx.app.getPreferences(PREFS_NAME);
         }
@@ -23,6 +24,7 @@ public class BlobGamePreferences {
     public void updateHighScore(int score) {
         if (getPrefs().getInteger(HIGH_SCORE, 0) < score){
             getPrefs().putInteger(HIGH_SCORE, score);
+            getPrefs().flush();
         }
     }
 
