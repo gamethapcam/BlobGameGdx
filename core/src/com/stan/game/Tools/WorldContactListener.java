@@ -1,11 +1,11 @@
 package com.stan.game.Tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.stan.game.Pickups.Pickup;
 import com.stan.game.BlobGame;
 import com.stan.game.Sprites.GoodBlob;
 
@@ -36,6 +36,16 @@ public class WorldContactListener implements ContactListener {
                 }
                 else
                     ((GoodBlob) fixB.getUserData()).hitWall();
+                break;
+            case BlobGame.GOOD_BLOB_BIT | BlobGame.PICKUP_BIT:
+                if (fixA.getFilterData().categoryBits == BlobGame.GOOD_BLOB_BIT) {
+                    ((GoodBlob) fixA.getUserData()).onPickup((Pickup) fixB.getUserData());
+                    ((Pickup) fixB.getUserData()).onPickedUp();
+                }
+                else {
+                    ((GoodBlob) fixB.getUserData()).onPickup((Pickup) fixA.getUserData());
+                    ((Pickup) fixB.getUserData()).onPickedUp();
+                }
                 break;
         }
     }

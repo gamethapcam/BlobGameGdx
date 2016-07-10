@@ -17,7 +17,8 @@ public class BadBlob extends Enemy {
     private float stateTimer;
     private Texture texture;
     public BadBlob(PlayScreen screen) {
-        super(screen, 100 / BlobGame.PPM, 50 / BlobGame.PPM);
+
+        super(screen);
         stateTimer = 0;
         texture = new Texture("badblob_1.png");
         setBounds(getX(), getY(), 27 / BlobGame.PPM, 27 / BlobGame.PPM);
@@ -35,7 +36,6 @@ public class BadBlob extends Enemy {
         BodyDef bdef = new BodyDef();
         Random rand = new Random();
 
-        int  n = rand.nextInt(BlobGame.V_WIDTH) + 1;
         bdef.position.set((rand.nextInt(BlobGame.V_WIDTH - 100) + 50) / BlobGame.PPM, (rand.nextInt(BlobGame.V_HEIGHT - 100) + 50) / BlobGame.PPM);
         bdef.linearVelocity.set((rand.nextInt(50) - 25), (rand.nextInt(50) - 25));
         bdef.type = BodyDef.BodyType.DynamicBody;
@@ -47,7 +47,8 @@ public class BadBlob extends Enemy {
         fdef.filter.maskBits = BlobGame.GOOD_BLOB_BIT | BlobGame.GROUND_BIT;
         fdef.shape = shape;
         fdef.restitution = BlobGame.BAD_BLOB_RESTITUTION;
-        b2body.createFixture(fdef);
+        b2body.createFixture(fdef).setUserData(this);
 
     }
+
 }

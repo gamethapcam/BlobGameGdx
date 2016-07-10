@@ -1,5 +1,6 @@
 package com.stan.game.Sprites;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -14,13 +15,18 @@ public abstract class Enemy extends Sprite {
     protected PlayScreen screen;
     public Body b2body;
 
-    public Enemy(PlayScreen screen, float x, float y){
+    public Enemy(PlayScreen screen){
         this.world = screen.getWorld();
         this.screen = screen;
         defineEnemy();
-        setPosition(x, y);
+
 
     }
 
     public abstract void defineEnemy();
+
+    public void draw(Batch batch){
+        if((getX() != 0))
+            super.draw(batch);
+    }
 }

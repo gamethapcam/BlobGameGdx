@@ -2,11 +2,12 @@ package com.stan.game.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -16,14 +17,19 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.stan.game.Accessors.GoodBlobAccessor;
+import com.stan.game.Pickups.Health;
+import com.stan.game.Pickups.Pickup;
 import com.stan.game.BlobGame;
 import com.stan.game.InputOutput.BlobGameInputProcessor;
+import com.stan.game.Pickups.Power;
 import com.stan.game.Scenes.Hud;
+import com.stan.game.Settings.BlobGamePreferences;
 import com.stan.game.Sprites.BadBlob;
-import com.stan.game.Sprites.Enemy;
 import com.stan.game.Sprites.GoodBlob;
 import com.stan.game.Tools.B2WorldCreator;
 import com.stan.game.Tools.WorldContactListener;
+
+import java.util.Random;
 
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
@@ -48,20 +54,22 @@ public class PlayScreen implements Screen {
     private Music music;
     private Array<BadBlob> enemylist;
     private boolean addedBlob;
+    private Array<Pickup> pickupList;
+    private boolean addedPickup;
 
     public PlayScreen(BlobGame game){
         music = BlobGame.manager.get("game_music.mp3", Music.class);
         music.setLooping(true);
         music.setVolume(0.3f);
         music.play();
-
+        addedPickup = false;
         addedBlob = false;
         this.game = game;
         gamecam = new OrthographicCamera();
         gamePort = new FitViewport(BlobGame.V_WIDTH / BlobGame.PPM, BlobGame.V_HEIGHT / BlobGame.PPM, gamecam);
         Gdx.input.setInputProcessor(new BlobGameInputProcessor(this));
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("game_board.tmx");
+        map = mapLoader.load("game_board_1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / BlobGame.PPM);
         gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
         world = new World(new Vector2(0, 0), true);
@@ -71,7 +79,9 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch, player);
         enemylist = new Array<BadBlob>();
         enemylist.add(new BadBlob(this));
-        //enemy = new BadBlob(this);
+        pickupList = new Array<Pickup>();
+        pickupList.add(new Power(this));
+        pickupList.add(new Health(this));
         tweenManager = new TweenManager();
         world.setContactListener(new WorldContactListener());
     }
@@ -95,17 +105,38 @@ public class PlayScreen implements Screen {
         for(BadBlob enemy : enemylist) {
             enemy.update(dt);
         }
+        for(Pickup pickup : pickupList) {
+            pickup.update(dt);
+        }
 
         renderer.setView(gamecam);
         if (player.currentState == GoodBlob.State.DEAD){
             music.stop();
         }
+        handlePickups();
+
+    }
+
+    private void handlePickups(){
         if ((hud.getTime() % 10 ) == 0 && addedBlob == false) {
             enemylist.add(new BadBlob(this));
             addedBlob = true;
         } else if((hud.getTime() % 10 ) != 0){
             addedBlob = false;
         }
+
+        if ((hud.getTime() % 5 ) == 0 && (hud.getTime() % 10 ) != 0 && addedPickup == false) {
+            Random rand = new Random();
+            if (rand.nextInt(2) == 1){
+                pickupList.add(new Health(this));
+            } else {
+                pickupList.add(new Power(this));
+            }
+            addedPickup = true;
+        } else if((hud.getTime() % 5 ) != 0){
+            addedPickup = false;
+        }
+
 
     }
 
@@ -168,14 +199,22 @@ public class PlayScreen implements Screen {
         for(BadBlob enemy : enemylist) {
             enemy.draw(game.batch);
         }
+        for(Pickup pickup : pickupList) {
+            pickup.draw(game.batch);
+        }
         //enemy.draw(game.batch);
         game.batch.end();
         hud.stage.draw();
-        if (gameOver()){
-
+        if (gameOver() || hud.isTimeUp()){
+            handleHighScores();
             game.setScreen(new GameOverScreen(game));
             dispose();
         }
+    }
+
+    public void handleHighScores(){
+        BlobGamePreferences prefs = new BlobGamePreferences();
+        prefs.updateHighScore(player.getScore());
     }
 
     @Override

@@ -42,6 +42,10 @@ public class Hud implements Disposable {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Montserrat-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 30;
+
+        parameter.shadowOffsetX = 2;
+        parameter.shadowOffsetY = 2;
+        parameter.shadowColor= Color.BLACK;
         BitmapFont font30 = generator.generateFont(parameter); // font size 12 pixels
         font30.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         generator.dispose(); // don't forget to dispose to avoid memory leaks!
@@ -59,12 +63,12 @@ public class Hud implements Disposable {
         table.top();
         table.setFillParent(true);
 
-        countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(font30, Color.BLACK));
-        livesLabel = new Label(String.format("%02d", livesCount), new Label.LabelStyle(font30, Color.BLACK));
-        timeLabel = new Label("TIME", new Label.LabelStyle(font30, Color.BLACK));
-        livesCountLabel = new Label("LIVES", new Label.LabelStyle(font30, Color.BLACK));
-        scoreCountLabel = new Label("SCORE", new Label.LabelStyle(font30, Color.BLACK));
-        scoreLabel = new Label(String.format("%03d", score), new Label.LabelStyle(font30, Color.BLACK));
+        countdownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(font30, Color.WHITE));
+        livesLabel = new Label(String.format("%02d", livesCount), new Label.LabelStyle(font30, Color.WHITE));
+        timeLabel = new Label("TIME", new Label.LabelStyle(font30, Color.WHITE));
+        livesCountLabel = new Label("LIVES", new Label.LabelStyle(font30, Color.WHITE));
+        scoreCountLabel = new Label("SCORE", new Label.LabelStyle(font30, Color.WHITE));
+        scoreLabel = new Label(String.format("%03d", score), new Label.LabelStyle(font30, Color.WHITE));
 
         table.add(timeLabel).expandX().padTop(10);
         table.add(livesCountLabel).expandX().padTop(10);
@@ -75,9 +79,9 @@ public class Hud implements Disposable {
         table.add(scoreLabel).expandX().padTop(10);
 
         powerBar = new PowerBar();
-        powerBar.setPosition(BlobGame.V_WIDTH / 2 - 200, 10);
+        powerBar.setPosition(BlobGame.V_WIDTH / 2 - 200, 15);
         powerBar.setWidth(400);
-        powerBar.setHeight(10);
+        powerBar.setHeight(12);
 
         stage.addActor(powerBar);
         stage.addActor(table);

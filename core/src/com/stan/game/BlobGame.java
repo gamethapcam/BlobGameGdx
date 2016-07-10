@@ -29,6 +29,7 @@ public class BlobGame extends Game {
 	public static final short GROUND_BIT = 1;
 	public static final short GOOD_BLOB_BIT = 2;
 	public static final short BAD_BLOB_BIT = 4;
+	public static final short PICKUP_BIT = 8;
 
 	public static AssetManager manager;
 
@@ -48,7 +49,7 @@ public class BlobGame extends Game {
 		manager.load("hit_wall.mp3", Sound.class);
 		manager.load("low_power.wav", Sound.class);
 		manager.finishLoading();
-		setScreen(new TitleScreen(this));
+		setScreen(new TitleScreen(this, batch));
 	}
 
 

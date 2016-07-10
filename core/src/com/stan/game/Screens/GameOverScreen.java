@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.stan.game.BlobGame;
 import com.stan.game.InputOutput.GameOverScreenInputListener;
 import com.stan.game.InputOutput.TitleScreenInputListener;
+import com.stan.game.Settings.BlobGamePreferences;
 
 /**
  * Created by stan on 9/07/16.
@@ -35,7 +36,7 @@ public class GameOverScreen implements Screen {
         music.setLooping(true);
         music.setVolume(0.3f);
         music.play();
-
+        BlobGamePreferences prefs = new BlobGamePreferences();
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Montserrat-Bold.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -54,9 +55,12 @@ public class GameOverScreen implements Screen {
         table.setFillParent(true);
         Label gameOverlabel = new Label("GAME OVER", font);
         Label playAgainLabel = new Label("TOUCH TO PLAY AGAIN", font);
+        Label highScoreLabel = new Label("HIGH SCORE: " + Integer.toString(prefs.getHighScore()), font);
         table.add(gameOverlabel).expandX();
         table.row();
         table.add(playAgainLabel).expandX().padTop(10f);
+        table.row();
+        table.add(highScoreLabel).expandX().padTop(10f);
         stage.addActor(table);
     }
     @Override
@@ -74,12 +78,9 @@ public class GameOverScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.justTouched()){
-            music.stop();
-            game.setScreen(new PlayScreen((BlobGame) game));
-            dispose();
-        }
 
+        Gdx.gl.glViewport((int) viewport.getScreenX(), (int) viewport.getScreenY(),
+                (int) viewport.getScreenWidth(), (int) viewport.getScreenHeight());
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.draw();

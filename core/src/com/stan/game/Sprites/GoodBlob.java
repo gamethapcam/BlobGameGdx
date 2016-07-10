@@ -9,6 +9,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.stan.game.Pickups.Health;
+import com.stan.game.Pickups.Pickup;
+import com.stan.game.Pickups.Power;
 import com.stan.game.BlobGame;
 import com.stan.game.Screens.PlayScreen;
 
@@ -88,7 +91,7 @@ public class GoodBlob extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(13 / BlobGame.PPM);
         fdef.filter.categoryBits = BlobGame.GOOD_BLOB_BIT;
-        fdef.filter.maskBits = BlobGame.GROUND_BIT | BlobGame.BAD_BLOB_BIT;
+        fdef.filter.maskBits = BlobGame.GROUND_BIT | BlobGame.BAD_BLOB_BIT | BlobGame.PICKUP_BIT;
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
     }
@@ -106,7 +109,7 @@ public class GoodBlob extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(13 * scale / BlobGame.PPM);
         fdef.filter.categoryBits = BlobGame.GOOD_BLOB_BIT;
-        fdef.filter.maskBits = BlobGame.GROUND_BIT | BlobGame.BAD_BLOB_BIT;
+        fdef.filter.maskBits = BlobGame.GROUND_BIT | BlobGame.BAD_BLOB_BIT | BlobGame.PICKUP_BIT;
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
     }
@@ -180,6 +183,18 @@ public class GoodBlob extends Sprite {
             return State.DEAD;
         else
             return State.ALIVE;
+    }
+
+    public void onPickup(Pickup pickup){
+        if (pickup instanceof Health){
+            lives += 1;
+        } else if (pickup instanceof Power){
+            if (power <= .6f){
+                power += .4f;
+            } else {
+                power = 1f;
+            }
+        }
     }
 
     public float getStateTimer(){

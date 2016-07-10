@@ -9,10 +9,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.stan.game.BlobGame;
 import com.stan.game.InputOutput.TitleScreenInputListener;
@@ -26,7 +29,7 @@ public class TitleScreen implements Screen {
     private Music music;
     private Game game;
 
-    public TitleScreen(Game game){
+    public TitleScreen(Game game, SpriteBatch sb){
 
         Gdx.input.setInputProcessor(new TitleScreenInputListener(this));
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Montserrat-Bold.ttf"));
@@ -43,9 +46,12 @@ public class TitleScreen implements Screen {
         Label.LabelStyle font = new Label.LabelStyle(font50, Color.WHITE);
         Table table = new Table();
         table.center();
-        table.setFillParent(true);
+        table.setWidth(BlobGame.V_WIDTH);
+        table.setHeight(BlobGame.V_HEIGHT);
+        //table.setFillParent(true);
         Label playLabel = new Label("TOUCH TO PLAY", font);
-        table.add(playLabel).expandX();
+        table.add(playLabel);
+
         stage.addActor(table);
 
         music = BlobGame.manager.get("title_screen.mp3", Music.class);
@@ -69,15 +75,17 @@ public class TitleScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
-
+        Gdx.gl.glViewport((int) viewport.getScreenX(), (int) viewport.getScreenY(),
+                (int) viewport.getScreenWidth(), (int) viewport.getScreenHeight());
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
+
 
     }
 
