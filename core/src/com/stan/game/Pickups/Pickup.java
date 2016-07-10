@@ -65,7 +65,7 @@ public abstract class Pickup extends Sprite {
     }
 
     public void onPickedUp(){
-        BlobGame.manager.get("pickup.wav", Sound.class).play();
+        BlobGame.manager.get("pickup.wav", Sound.class).play(.2f);
         this.setToDestroy = true;
     }
 

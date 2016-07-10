@@ -126,7 +126,7 @@ public class GoodBlob extends Sprite {
         if(!goodBlobIsDead) {
             if (this.scale == 1) {
                 if (this.lives > 0) {
-                    BlobGame.manager.get("Hit_Hurt.wav", Sound.class).play();
+                    BlobGame.manager.get("Hit_Hurt.wav", Sound.class).play(.4f);
                     this.lives--;
                 }
             } else {
@@ -134,11 +134,11 @@ public class GoodBlob extends Sprite {
                     this.power += .1f;
                 }
                 this.score += 10;
-                BlobGame.manager.get("get_point.mp3", Sound.class).play();
+                BlobGame.manager.get("get_point.mp3", Sound.class).play(.4f);
             }
 
             if (this.lives == 0) {
-                BlobGame.manager.get("death_sound.mp3", Sound.class).play();
+                BlobGame.manager.get("death_sound.mp3", Sound.class).play(.4f);
                 goodBlobIsDead = true;
             }
         }
@@ -146,7 +146,8 @@ public class GoodBlob extends Sprite {
 
     public void hitWall(){
         if (!goodBlobIsDead) {
-            BlobGame.manager.get("hit_wall.mp3", Sound.class).play();
+            BlobGame.manager.get("hit_wall.mp3", Sound.class).play(.4f);
+
         }
     }
 

@@ -53,14 +53,14 @@ public class BlobGameInputProcessor implements InputProcessor {
                 Tween.to(screen.getPlayer(), GoodBlobAccessor.ALPHA, .4f).target(90).start(screen.getTweenManager()).ease(Back.IN);
             } else if (keycode == KEY_SPACE){
                 if(screen.getPlayer().getPower() > .1){
-                    BlobGame.manager.get("Powerup.wav", Sound.class).play();
+                    BlobGame.manager.get("Powerup.wav", Sound.class).play(.1f);
                     screen.getPlayer().changePower(-.1f);
                     Tween.set(screen.getPlayer(), GoodBlobAccessor.BETA).target(screen.getPlayer().getBlobScale()).start(screen.getTweenManager());
                     Tween.to(screen.getPlayer(), GoodBlobAccessor.BETA, .2f).target(4f).start(screen.getTweenManager()).ease(Back.IN);
                     Tween.set(screen.getPlayer(), GoodBlobAccessor.BETA).target(screen.getPlayer().getBlobScale()).start(screen.getTweenManager());
                     Tween.to(screen.getPlayer(), GoodBlobAccessor.BETA, .2f).target(1).start(screen.getTweenManager()).ease(Back.IN).delay(.7f);
                 } else {
-                    BlobGame.manager.get("low_power.wav", Sound.class).play();
+                    BlobGame.manager.get("low_power.wav", Sound.class).play(.2f);
                 }
             }
 
@@ -89,13 +89,13 @@ public class BlobGameInputProcessor implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (screen.getPlayer().getState() != GoodBlob.State.DEAD && screen.getPlayer().getPower() > .1 ) {
             screen.getPlayer().changePower(-.1f);
-            BlobGame.manager.get("Powerup.wav", Sound.class).play();
+            BlobGame.manager.get("Powerup.wav", Sound.class).play(.1f);
             Tween.set(screen.getPlayer(), GoodBlobAccessor.BETA).target(screen.getPlayer().getBlobScale()).start(screen.getTweenManager());
             Tween.to(screen.getPlayer(), GoodBlobAccessor.BETA, .2f).target(4f).start(screen.getTweenManager()).ease(Back.IN);
             Tween.set(screen.getPlayer(), GoodBlobAccessor.BETA).target(screen.getPlayer().getBlobScale()).start(screen.getTweenManager());
             Tween.to(screen.getPlayer(), GoodBlobAccessor.BETA, .2f).target(1).start(screen.getTweenManager()).ease(Back.IN).delay(.7f);
         } else {
-            BlobGame.manager.get("low_power.wav", Sound.class).play();
+            BlobGame.manager.get("low_power.wav", Sound.class).play(.2f);
         }
         return false;
     }
@@ -113,22 +113,22 @@ public class BlobGameInputProcessor implements InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if (screen.getPlayer().getState() != GoodBlob.State.DEAD) {
             if (Math.abs(screenX - prevDragX) > Math.abs(screenY - prevDragY)) {
-                if (screenX - prevDragX > 0) {
+                if (screenX - prevDragX > 30) {
                     screen.getPlayer().b2body.applyLinearImpulse(new Vector2(BlobGame.GOOD_BLOB_SPEED, 0), screen.getPlayer().b2body.getWorldCenter(), true);
                     Tween.set(screen.getPlayer(), GoodBlobAccessor.ALPHA).target(screen.getPlayer().getAngle()).start(screen.getTweenManager());
                     Tween.to(screen.getPlayer(), GoodBlobAccessor.ALPHA, .4f).target(90).start(screen.getTweenManager()).ease(Back.IN);
-                } else {
+                } else if (screenX - prevDragX < -30){
                     screen.getPlayer().b2body.applyLinearImpulse(new Vector2(-BlobGame.GOOD_BLOB_SPEED, 0), screen.getPlayer().b2body.getWorldCenter(),
                             true);
                     Tween.set(screen.getPlayer(), GoodBlobAccessor.ALPHA).target(screen.getPlayer().getAngle()).start(screen.getTweenManager());
                     Tween.to(screen.getPlayer(), GoodBlobAccessor.ALPHA, .4f).target(270).start(screen.getTweenManager()).ease(Back.IN);
                 }
             } else if (Math.abs(screenX - prevDragX) < Math.abs(screenY - prevDragY)) {
-                if (screenY - prevDragY < 0) {
+                if (screenY - prevDragY < -30) {
                     screen.getPlayer().b2body.applyLinearImpulse(new Vector2(0, BlobGame.GOOD_BLOB_SPEED), screen.getPlayer().b2body.getWorldCenter(), true);
                     Tween.set(screen.getPlayer(), GoodBlobAccessor.ALPHA).target(screen.getPlayer().getAngle()).start(screen.getTweenManager());
                     Tween.to(screen.getPlayer(), GoodBlobAccessor.ALPHA, .4f).target(180).start(screen.getTweenManager()).ease(Back.IN);
-                } else {
+                } else if (screenY - prevDragY > 30){
                     screen.getPlayer().b2body.applyLinearImpulse(new Vector2(0, -BlobGame.GOOD_BLOB_SPEED), screen.getPlayer().b2body.getWorldCenter(), true);
                     Tween.set(screen.getPlayer(), GoodBlobAccessor.ALPHA).target(screen.getPlayer().getAngle()).start(screen.getTweenManager());
                     Tween.to(screen.getPlayer(), GoodBlobAccessor.ALPHA, .4f).target(0).start(screen.getTweenManager()).ease(Back.IN);
